@@ -12,10 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Slf4j
@@ -59,7 +59,7 @@ public class JwtService {
         if (ttl > 0) {
             redisTemplate.opsForValue().set(
                     BLACKLIST_PREFIX + token, "blacklisted",
-                    ttl, TimeUnit.MILLISECONDS);
+                    Duration.ofMillis(ttl));
             log.info("Token blacklisted for user: {}", extractUsername(token));
         }
     }
@@ -81,11 +81,11 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.getSubject());
     }
 
     public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, claims -> claims.getExpiration());
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
