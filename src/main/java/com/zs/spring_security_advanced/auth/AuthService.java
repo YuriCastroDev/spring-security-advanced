@@ -3,6 +3,7 @@ package com.zs.spring_security_advanced.auth;
 import com.zs.spring_security_advanced.dto.AuthResponse;
 import com.zs.spring_security_advanced.dto.LoginRequest;
 import com.zs.spring_security_advanced.dto.RegisterRequest;
+import com.zs.spring_security_advanced.entity.Role;
 import com.zs.spring_security_advanced.entity.SecurityEvent;
 import com.zs.spring_security_advanced.entity.User;
 import com.zs.spring_security_advanced.jwt.JwtService;
@@ -43,6 +44,7 @@ public class AuthService {
                 .name(request.name())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
+                .role(Role.ROLE_USER)
                 .build();
 
         userRepository.save(user);
