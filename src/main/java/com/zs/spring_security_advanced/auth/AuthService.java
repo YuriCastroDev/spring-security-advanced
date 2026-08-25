@@ -84,10 +84,12 @@ public class AuthService {
         return AuthResponse.of(access, refresh, user.getEmail(), user.getRole().name());
     }
 
-    public void logout(String token, String email) {
+    public String logout(String token) {
+        String email = jwtService.extractUsername(token);
         jwtService.blacklistToken(token);
         logEvent(email, "LOGOUT", "N/A", "Token blacklisted");
         log.info("User logged out: {}", email);
+        return email;
     }
 
     private void handleFailedLogin(User user, String ipAddress) {

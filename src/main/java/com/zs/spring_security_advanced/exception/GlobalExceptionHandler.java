@@ -2,6 +2,7 @@ package com.zs.spring_security_advanced.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,8 +20,7 @@ public class GlobalExceptionHandler {
                 "status", 401,
                 "error", "Unauthorized",
                 "message", "Invalid email or password",
-                "timestamp", LocalDateTime.now().toString()
-        ));
+                "timestamp", LocalDateTime.now().toString()));
     }
 
     @ExceptionHandler(LockedException.class)
@@ -29,8 +29,16 @@ public class GlobalExceptionHandler {
                 "status", 403,
                 "error", "Account Locked",
                 "message", ex.getMessage(),
-                "timestamp", LocalDateTime.now().toString()
-        ));
+                "timestamp", LocalDateTime.now().toString()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "status", 403,
+                "error", "Forbidden",
+                "message", "You don't have permission to access this resource",
+                "timestamp", LocalDateTime.now().toString()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -39,7 +47,6 @@ public class GlobalExceptionHandler {
                 "status", 400,
                 "error", "Bad Request",
                 "message", ex.getMessage(),
-                "timestamp", LocalDateTime.now().toString()
-        ));
+                "timestamp", LocalDateTime.now().toString()));
     }
 }
